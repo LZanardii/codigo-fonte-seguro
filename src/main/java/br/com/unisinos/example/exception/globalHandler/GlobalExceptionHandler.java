@@ -1,8 +1,7 @@
 package br.com.unisinos.example.exception.globalHandler;
 
-
-import br.com.unisinos.example.exception.CustomException;
-import br.com.unisinos.example.exception.EmptyDataException;
+import br.com.unisinos.example.exception.DataSaveErrorException;
+import br.com.unisinos.example.exception.SenhaFracaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 @Slf4j
@@ -44,17 +42,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmptyDataException.class)
-    public final ResponseEntity<ErrorResponse> emptyDataException(Exception ex){
+    @ExceptionHandler(DataSaveErrorException.class)
+    public final ResponseEntity<ErrorResponse> dataSaveErrorException(Exception ex){
         log.error(ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("I_AM_A_TEAPOT", Collections.singletonList(ex.getMessage()));
-        return new ResponseEntity<>(errorResponse, I_AM_A_TEAPOT);
+        ErrorResponse errorResponse = new ErrorResponse("Erro interno ao salvar usuário", Collections.singletonList(ex.getMessage()));
+        return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(CustomException.class)
-    public final ResponseEntity<ErrorResponse> customException(CustomException ex){
-        log.error(ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Uepa", Collections.singletonList(ex.getMessage()));
-        return new ResponseEntity<>(errorResponse, ex.getStatus());
+    @ExceptionHandler(SenhaFracaException.class)
+    public final ResponseEntity<ErrorResponse> senhaFracaException(SenhaFracaException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessages());
+        return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
     }
 }

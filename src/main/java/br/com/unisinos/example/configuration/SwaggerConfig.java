@@ -18,7 +18,8 @@ public class SwaggerConfig {
             )
             .description("Aplicação desenvolvida para exemplos com casos de teste: <br><li>Vulneráveis<br><li>Corrigidos.")
             .version("1.0.0-rc.1"))
-            .externalDocs(new ExternalDocumentation().description("Documentação")
-                    .url("https://github.com/lzanardii"));
+            .externalDocs(new ExternalDocumentation()
+                    .description("Documentação")
+                    .url("https://github.com/LZanardii/codigo-fonte-seguro/blob/main/README.md"));
   }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Integer> {
 
   List<UsuarioModel> findAllByCasePassword(String casePassword);
-  List<UsuarioModel> findAllByCasePasswordAndNomeContaining(String casePassword, String nome);
+  List<UsuarioModel> findAllByCasePasswordAndNomeContainingIgnoreCase(String casePassword, String nome);
 }

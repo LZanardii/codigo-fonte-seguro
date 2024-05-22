@@ -1,6 +1,6 @@
 package br.com.unisinos.example.exception.globalHandler;
 
-import br.com.unisinos.example.exception.DataSaveErrorException;
+import br.com.unisinos.example.exception.DataErrorException;
 import br.com.unisinos.example.exception.SenhaFracaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,11 +14,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import static br.com.unisinos.example.util.Constants.BAD_REQUEST_ERROR_SAVE_MESSAGE;
 import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
@@ -30,7 +29,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
 
-        Map<String, List<String>> body = new HashMap<>();
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -38,20 +36,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        body.put("details:", errors);
-        return new ResponseEntity<>(body, BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DataSaveErrorException.class)
-    public final ResponseEntity<ErrorResponse> dataSaveErrorException(Exception ex){
-        log.error(ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Erro interno ao salvar usuário", Collections.singletonList(ex.getMessage()));
-        return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
+        ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST_ERROR_SAVE_MESSAGE, errors);
+        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 
     @ExceptionHandler(SenhaFracaException.class)
     public final ResponseEntity<ErrorResponse> senhaFracaException(SenhaFracaException ex){
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessages());
+        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataErrorException.class)
+    public final ResponseEntity<ErrorResponse> dataSaveErrorException(Exception ex){
+        log.error(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("Erro interno ao salvar usuário", Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
     }
 }

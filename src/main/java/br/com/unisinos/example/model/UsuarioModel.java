@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -15,36 +16,40 @@ import java.time.LocalDate;
 @Table(name = "Usuario")
 public class UsuarioModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @NonNull
-    private String nome;
+	@NonNull
+	private String nome;
 
-    @NonNull
-    private String senha;
+	@NonNull
+	private String senha;
 
-    @NonNull
-    private LocalDate dataNascimento;
+	@NonNull
+	private LocalDate dataNascimento;
 
-    @NonNull
-    private String email;
+	@NonNull
+	private String email;
 
-    @NonNull
-    private String status;
+	@NonNull
+	private String status;
 
-    @NonNull
-    private String casePassword;
+	@NonNull
+	private String casePassword;
 
-    public static UsuarioModel toUsuarioModel(UsuarioDto usuarioDto, UsuarioStatus status, String casePassword){
-        return new UsuarioModel(
-                usuarioDto.getNome(),
-                usuarioDto.getSenha(),
-                usuarioDto.getDataNascimento(),
-                usuarioDto.getEmail(),
-                status.getValue(),
-                casePassword
-        );
-    }
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+	public Collection<UsuarioSenhaHistoricoModel> historicoSenhas;
+
+	public static UsuarioModel toUsuarioModel(UsuarioDto usuarioDto, UsuarioStatus status, String casePassword) {
+		return new UsuarioModel(
+				usuarioDto.getNome(),
+				usuarioDto.getSenha(),
+				usuarioDto.getDataNascimento(),
+				usuarioDto.getEmail(),
+				status.getValue(),
+				casePassword
+		);
+	}
+
 }

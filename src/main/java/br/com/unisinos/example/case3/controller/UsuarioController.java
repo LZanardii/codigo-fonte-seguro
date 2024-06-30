@@ -20,7 +20,7 @@ public class UsuarioController {
 	final UsuarioServiceImpl usuarioService;
 
 	@GetMapping("/all")
-	public List<UsuarioDto> getAllCase1Users() {
+	public List<UsuarioDto> getAllUsers() {
 		return usuarioService.findUsuarioListByCase();
 	}
 

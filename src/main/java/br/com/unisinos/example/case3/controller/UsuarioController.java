@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/case-3/usuario/senha/{id}")
 @RestController
-@Tag(name = "Case 2", description = "histórico de senhas para previnir reutilização de senhas")
+@Tag(name = "Case 3", description = "histórico de senhas para previnir reutilização de senhas")
 public class UsuarioController {
 
 	final UsuarioServiceImpl usuarioService;
